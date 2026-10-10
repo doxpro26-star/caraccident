@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: caraccident
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALERT_RADIUS_KM
+        value: 5
