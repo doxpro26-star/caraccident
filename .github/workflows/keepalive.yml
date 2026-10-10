@@ -1,0 +1,21 @@
+name: Keep Render Awake
+
+# Pings the deployed Flask app so Render's free tier never idles to sleep.
+# Setup (one time): repo Settings → Secrets and variables → Actions → New secret
+#   Name: RENDER_URL   Value: https://caraccident.onrender.com   (your real URL, no trailing slash)
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"   # every 10 min (under Render's 15-min idle timeout)
+  workflow_dispatch:          # manual "Run workflow" button for testing
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping /health
+        run: |
+          URL="${{ secrets.RENDER_URL }}/health"
+          CODE=$(curl -s -o /dev/null -w "%{http_code}" --max-time 60 "$URL")
+          echo "HTTP $CODE from $URL"
+          [ "$CODE" = "200" ] || exit 1
