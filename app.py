@@ -11,8 +11,14 @@ import json
 import os
 import secrets
 from datetime import datetime
+from zoneinfo import ZoneInfo
 from flask import Flask, request, jsonify, redirect, url_for, render_template, flash, session
 from werkzeug.security import generate_password_hash, check_password_hash
+
+IST = ZoneInfo("Asia/Kolkata")
+
+def now_ist(fmt="%Y-%m-%d %H:%M:%S"):
+    return datetime.now(IST).strftime(fmt)
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", secrets.token_hex(16))
@@ -73,7 +79,7 @@ def get_stats():
     c = db()
     nh = c.execute("SELECT COUNT(*) n FROM hospitals").fetchone()["n"]
     na = c.execute("SELECT COUNT(*) n FROM alerts").fetchone()["n"]
-    today = datetime.now().strftime("%Y-%m-%d")
+    today = now_ist("%Y-%m-%d")
     nt = c.execute("SELECT COUNT(*) n FROM alerts WHERE time LIKE ?", (today + "%",)).fetchone()["n"]
     last = c.execute("SELECT * FROM alerts ORDER BY id DESC LIMIT 1").fetchone()
     c.close()
@@ -92,7 +98,7 @@ def inject_globals():
             ch = dict(row)
         else:
             session.pop("hospital_id", None)
-    return {"RADIUS": RADIUS_KM, "now": datetime.now(), "current_hospital": ch}
+    return {"RADIUS": RADIUS_KM, "now": datetime.now(IST), "current_hospital": ch}
 
 def current_hospital_full():
     hid = session.get("hospital_id")
@@ -102,6 +108,10 @@ def current_hospital_full():
     row = c.execute("SELECT * FROM hospitals WHERE id=?", (hid,)).fetchone()
     c.close()
     return dict(row) if row else None
+
+def prioritize(alerts):
+    """GPS-fix alerts first (newest first), then location-unknown ones."""
+    return sorted(alerts, key=lambda a: (a["lat"] == 0 and a["lon"] == 0, -a["id"]))
 
 def alerts_near(hospital, limit=50):
     c = db()
@@ -121,7 +131,7 @@ def alerts_near(hospital, limit=50):
         except json.JSONDecodeError:
             a["nearby_list"] = []
         mine.append(a)
-    return mine
+    return prioritize(mine)
 
 # ---------- pages ----------
 @app.route("/")
@@ -135,7 +145,7 @@ def index():
             a["nearby_list"] = json.loads(a["nearby"] or "[]")
         except json.JSONDecodeError:
             a["nearby_list"] = []
-    return render_template("index.html", alerts=alerts, hospitals=hospitals, stats=get_stats())
+    return render_template("index.html", alerts=prioritize(alerts), hospitals=hospitals, stats=get_stats())
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -175,7 +185,7 @@ def register():
         cur = c.execute(
             "INSERT INTO hospitals(name,phone,address,lat,lon,created,password_hash) VALUES(?,?,?,?,?,?,?)",
             (name, phone, f"{address} {email}".strip(),
-             lat, lon, datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+             lat, lon, now_ist(),
              generate_password_hash(pw)))
         hid = cur.lastrowid
         c.commit(); c.close()
@@ -270,7 +280,7 @@ def api_alert():
     c = db()
     c.execute("INSERT INTO alerts(device_id,reason,lat,lon,roll,pitch,time,nearby) VALUES(?,?,?,?,?,?,?,?)",
               (device_id, reason, lat, lon, roll, pitch,
-               datetime.now().strftime("%Y-%m-%d %H:%M:%S"), json.dumps(near)))
+               now_ist(), json.dumps(near)))
     c.commit(); c.close()
     print(f"[ALERT] {reason} from {device_id} @ {lat},{lon} -> {len(near)} hospitals ({gps_note})")
     return jsonify({"ok": True, "notified": len(near), "hospitals": near,
@@ -286,7 +296,7 @@ def api_alerts():
             r["nearby_list"] = json.loads(r["nearby"] or "[]")
         except json.JSONDecodeError:
             r["nearby_list"] = []
-    return jsonify(rows)
+    return jsonify(prioritize(rows))
 
 @app.route("/health")
 def health():

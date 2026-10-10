@@ -70,7 +70,7 @@
     <div class="card alert-card">
       <span class="badge red">{{ a.reason }}</span>
       <span class="badge grey">{{ a.device_id }}</span>
-      <div class="alert-meta">{{ a.time }} · Roll {{ a.roll }}° · Pitch {{ a.pitch }}°</div>
+      <div class="alert-meta">{{ a.time }} IST · Roll {{ a.roll }}° · Pitch {{ a.pitch }}°</div>
       {% if a.lat == 0 and a.lon == 0 %}
       <div>📍 <b>Location unavailable</b> <span class="muted">(GPS had no fix — accident confirmed, location unknown)</span></div>
       {% else %}

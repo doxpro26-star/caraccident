@@ -53,7 +53,7 @@
         <tr>
           <td><span class="badge red">{{ a.reason }}</span><br><span class="muted">Roll {{ a.roll }}° · Pitch {{ a.pitch }}°</span></td>
           <td><b>{{ a.device_id }}</b></td>
-          <td class="muted">{{ a.time }}</td>
+          <td class="muted">{{ a.time }} IST</td>
           <td>{% if a.dist is not none %}<b>{{ a.dist }} km</b>{% else %}<b>—</b> <span class="muted">unknown</span>{% endif %}</td>
           <td>{% if a.lat == 0 and a.lon == 0 %}<b>Location unavailable</b> <span class="muted">(no GPS fix)</span>{% else %}<a target="_blank" href="https://maps.google.com/?q={{ a.lat }},{{ a.lon }}">{{ a.lat }}, {{ a.lon }}</a>{% endif %}</td>
           <td>{% if a.lat == 0 and a.lon == 0 %}<span class="muted">📞 call driver</span>{% else %}<a class="btn small btn-teal" target="_blank" href="https://maps.google.com/?q={{ a.lat }},{{ a.lon }}">🧭 Navigate</a>{% endif %}</td>
