@@ -11,6 +11,9 @@
   </div>
 </div>
 
+<h3 style="margin:14px 0 10px">Accident map</h3>
+<div class="card"><div id="hosp-map" class="map"></div></div>
+
 <h3 style="margin:14px 0 10px">Emergencies near you ({{ alerts|length }})</h3>
 {% if not alerts %}
 <div class="card"><div class="empty"><span class="big">✅</span><b>All clear — no nearby emergencies.</b><br><span class="muted">Crashes within {{ RADIUS }} km will appear here instantly.</span></div></div>
@@ -26,4 +29,12 @@
 </div>
 {% endfor %}
 <script>setTimeout(()=>location.reload(),10000)</script>
+{% endblock %}
+{% block scripts %}
+<script>
+renderCrashMap('hosp-map', {
+  hospital: {{ {'lat': hospital.lat, 'lon': hospital.lon, 'name': hospital.name}|tojson }},
+  alerts: {{ alerts|tojson }}
+});
+</script>
 {% endblock %}

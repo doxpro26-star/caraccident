@@ -38,6 +38,12 @@
   </div>
 
   <div class="section-title">
+    <h2>Accident map</h2>
+    <span class="muted">🔴 crash (GPS fix) · 🟩 your hospital — click a pin for details</span>
+  </div>
+  <div class="card" style="margin-top:14px"><div id="dash-map" class="map"></div></div>
+
+  <div class="section-title">
     <h2>Emergencies within {{ stats.radius }} km</h2>
     <span class="badge teal" id="alert-count">{{ alerts|length }} shown</span>
   </div>
@@ -66,4 +72,12 @@
 
 </div>
 <script>setTimeout(()=>location.reload(),10000)</script>
+{% endblock %}
+{% block scripts %}
+<script>
+renderCrashMap('dash-map', {
+  hospital: {{ {'lat': hospital.lat, 'lon': hospital.lon, 'name': hospital.name}|tojson }},
+  alerts: {{ alerts|tojson }}
+});
+</script>
 {% endblock %}

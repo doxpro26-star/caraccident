@@ -122,6 +122,12 @@ input:focus,select:focus{outline:2px solid var(--pale);border-color:var(--mid)}
 pre{background:var(--deep);color:var(--on-deep);border-radius:var(--r-sm);padding:14px;font-size:12px;overflow:auto;margin-top:10px}
 .hosp-row{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;padding:12px 0;border-bottom:1px solid var(--line)}
 .hosp-row:last-child{border-bottom:none}
+.map{height:380px;border-radius:var(--r-md);border:1px solid var(--line);z-index:0;background:var(--panel)}
+.pin{width:16px;height:16px;border-radius:50%;border:3px solid #fff;box-shadow:0 1px 6px rgba(0,0,0,.45)}
+.pin-crash{background:#dc2626}
+.pin-hosp{background:var(--mid);border-radius:5px}
+.leaflet-popup-content{font-family:var(--font);font-size:13px;line-height:1.5}
+@media(max-width:640px){.map{height:300px}}
 main{padding-bottom:40px}
 
 /* ── full-width dashboard (top nav, no sidebar) ── */

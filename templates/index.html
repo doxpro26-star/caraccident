@@ -56,6 +56,11 @@
 </div>
 
 <div class="container" id="feed">
+<div class="card tint" style="margin-top:26px">
+  <h2>🗺️ Live crash map</h2>
+  <p class="muted">Every GPS-fix accident pinned — 🔴 crash · 🟩 hospital. Click a pin for details.</p>
+  <div id="live-map" class="map" style="margin-top:10px"></div>
+</div>
 <div class="grid">
 <div>
   <div class="card tint">
@@ -115,4 +120,12 @@
 </div>
 </div>
 </div>
+{% endblock %}
+{% block scripts %}
+<script>
+renderCrashMap('live-map', {
+  hospitals: {{ hospitals|tojson }},
+  alerts: {{ alerts|tojson }}
+});
+</script>
 {% endblock %}

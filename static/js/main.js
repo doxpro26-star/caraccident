@@ -32,3 +32,47 @@ function fillGeo() {
   }
   setInterval(tick, 10000);
 })();
+
+// shared accident map (Leaflet + OpenStreetMap, no API key).
+// opts: { hospital: {lat,lon,name}|null, hospitals: [...], alerts: [...] }
+// Only GPS-fix alerts (lat/lon != 0) are pinned; view auto-fits all pins.
+window.renderCrashMap = function (elId, opts) {
+  var el = document.getElementById(elId);
+  if (!el || typeof L === 'undefined') return;
+  opts = opts || {};
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function pin(cls) {
+    return L.divIcon({ className: '', html: '<div class="pin ' + cls + '"></div>', iconSize: [16, 16] });
+  }
+  var pts = [];
+  var start = [18.5204, 73.8567]; // fallback centre (Pune)
+  if (opts.hospital) start = [opts.hospital.lat, opts.hospital.lon];
+  var map = L.map(elId).setView(start, 12);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19, attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a>'
+  }).addTo(map);
+  if (opts.hospital) {
+    var h = opts.hospital;
+    pts.push([h.lat, h.lon]);
+    L.marker([h.lat, h.lon], { icon: pin('pin-hosp') }).addTo(map)
+      .bindPopup('<b>🏥 ' + esc(h.name) + '</b><br>Your hospital');
+  }
+  (opts.hospitals || []).forEach(function (h) {
+    pts.push([h.lat, h.lon]);
+    L.marker([h.lat, h.lon], { icon: pin('pin-hosp') }).addTo(map)
+      .bindPopup('<b>🏥 ' + esc(h.name) + '</b>');
+  });
+  (opts.alerts || []).forEach(function (a) {
+    if (!a || a.lat === 0 && a.lon === 0) return; // no GPS fix: list only
+    pts.push([a.lat, a.lon]);
+    L.marker([a.lat, a.lon], { icon: pin('pin-crash') }).addTo(map)
+      .bindPopup('<b>🚨 ' + esc(a.reason) + '</b><br>' + esc(a.device_id) +
+        ' · ' + esc(a.time) + ' IST<br><a target="_blank" href="https://maps.google.com/?q=' +
+        a.lat + ',' + a.lon + '">Navigate →</a>');
+  });
+  if (pts.length > 1) map.fitBounds(pts, { padding: [30, 30] });
+};
