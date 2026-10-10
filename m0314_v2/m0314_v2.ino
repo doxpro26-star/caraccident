@@ -23,6 +23,13 @@
 
 #define SOS_BUTTON    26
 
+// Limit switch = physical crash sensor.
+// Wire: one terminal -> GND, other terminal -> GPIO14.
+// INPUT_PULLUP, so LOW = pressed = CRASH (same logic as your test sketch).
+// NOTE: pin 26 is already the SOS button, so the limit switch gets its own pin.
+// GPIO14 is used: safe (not a strapping pin) and has an internal pull-up.
+#define LIMIT_SWITCH_PIN 14
+
 #define MPU_SDA       21
 #define MPU_SCL       22
 
@@ -84,6 +91,8 @@ unsigned long alertStartMs   = 0;
 String        alertReason    = "";
 bool          lastBtnState   = HIGH;
 unsigned long lastBtnMs      = 0;
+bool          lastLimState   = HIGH;
+unsigned long lastLimMs      = 0;
 
 // ================= MOTOR STATE =================
 
@@ -313,6 +322,7 @@ void setup()
 {
   Serial.begin(115200);
   pinMode(SOS_BUTTON, INPUT_PULLUP);
+  pinMode(LIMIT_SWITCH_PIN, INPUT_PULLUP);
 
   // Motors
   pinMode(MOTOR_L_IN1, OUTPUT); pinMode(MOTOR_L_IN2, OUTPUT);
@@ -434,10 +444,21 @@ void loop()
   }
   lastBtnState = btnNow;
 
+  // Limit switch (crash) debounce — LOW = pressed = crash
+  bool limNow = digitalRead(LIMIT_SWITCH_PIN);
+  bool limPressed = false;
+  if (limNow == LOW && lastLimState == HIGH && (millis() - lastLimMs) > 50)
+  {
+    limPressed = true;
+    lastLimMs  = millis();
+  }
+  lastLimState = limNow;
+
   // Alert system handling
   if (!alertPending)
   {
-    if      (btnPressed)     triggerAlert("SOS BUTTON");
+    if      (limPressed)       triggerAlert("LIMIT SWITCH CRASH");
+    else if (btnPressed)       triggerAlert("SOS BUTTON");
     else if (impactDetected) triggerAlert("IMPACT DETECTED");
     else if (tiltDetected)   triggerAlert("TILT DETECTED");
   }
