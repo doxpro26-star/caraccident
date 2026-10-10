@@ -21,14 +21,13 @@
 
 // ================= PIN CONFIG =================
 
-#define SOS_BUTTON    26
+#define SOS_BUTTON    14
 
 // Limit switch = physical crash sensor.
-// Wire: one terminal -> GND, other terminal -> GPIO14.
-// INPUT_PULLUP, so LOW = pressed = CRASH (same logic as your test sketch).
-// NOTE: pin 26 is already the SOS button, so the limit switch gets its own pin.
-// GPIO14 is used: safe (not a strapping pin) and has an internal pull-up.
-#define LIMIT_SWITCH_PIN 14
+// Wire: one terminal -> GND, other terminal -> GPIO26.
+// INPUT_PULLUP, so LOW = pressed = CRASH (same logic as the test sketch).
+// SOS button lives on GPIO14, so each switch has its own pin.
+#define LIMIT_SWITCH_PIN 26
 
 #define MPU_SDA       21
 #define MPU_SCL       22
