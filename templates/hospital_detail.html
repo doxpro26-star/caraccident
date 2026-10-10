@@ -18,10 +18,10 @@
 {% for a in alerts %}
 <div class="card alert-card critical">
   <span class="badge red">{{ a.reason }}</span>
-  <span class="badge grey">{{ a.dist }} km away</span>
+  {% if a.dist is not none %}<span class="badge grey">{{ a.dist }} km away</span>{% else %}<span class="badge grey">location unknown</span>{% endif %}
   <div class="alert-meta">{{ a.device_id }} · {{ a.time }} · Roll {{ a.roll }}° Pitch {{ a.pitch }}°</div>
   <div class="btn-row">
-    <a class="btn small btn-teal" target="_blank" href="https://maps.google.com/?q={{ a.lat }},{{ a.lon }}">🧭 Navigate: {{ a.lat }}, {{ a.lon }}</a>
+    {% if a.lat == 0 and a.lon == 0 %}<span class="muted">📍 GPS had no fix — accident confirmed, 📞 call driver for location.</span>{% else %}<a class="btn small btn-teal" target="_blank" href="https://maps.google.com/?q={{ a.lat }},{{ a.lon }}">🧭 Navigate: {{ a.lat }}, {{ a.lon }}</a>{% endif %}
   </div>
 </div>
 {% endfor %}

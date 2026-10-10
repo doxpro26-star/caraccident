@@ -109,14 +109,18 @@ def alerts_near(hospital, limit=50):
     c.close()
     mine = []
     for a in rows:
-        d = haversine(a["lat"], a["lon"], hospital["lat"], hospital["lon"])
-        if d <= RADIUS_KM:
+        if a["lat"] == 0 and a["lon"] == 0:
+            a["dist"] = None  # broadcast: no GPS fix, location unknown
+        else:
+            d = haversine(a["lat"], a["lon"], hospital["lat"], hospital["lon"])
+            if d > RADIUS_KM:
+                continue
             a["dist"] = round(d, 2)
-            try:
-                a["nearby_list"] = json.loads(a["nearby"] or "[]")
-            except json.JSONDecodeError:
-                a["nearby_list"] = []
-            mine.append(a)
+        try:
+            a["nearby_list"] = json.loads(a["nearby"] or "[]")
+        except json.JSONDecodeError:
+            a["nearby_list"] = []
+        mine.append(a)
     return mine
 
 # ---------- pages ----------
@@ -244,20 +248,33 @@ def api_alert():
         lat = float(data.get("lat", 0)); lon = float(data.get("lon", 0))
     except (ValueError, TypeError):
         return jsonify({"ok": False, "error": "invalid lat/lon"}), 400
-    if lat == 0 and lon == 0:
-        return jsonify({"ok": False,
-                        "error": "no GPS fix (lat/lon 0). Move outdoors for a satellite fix."}), 400
     roll = float(data.get("roll", 0) or 0)
     pitch = float(data.get("pitch", 0) or 0)
-    near = nearby_hospitals(lat, lon)
+    if lat == 0 and lon == 0:
+        # No GPS fix: broadcast to ALL hospitals, location marked unknown
+        c = db()
+        rows = c.execute(
+            "SELECT id, name, phone, address, lat, lon, created FROM hospitals").fetchall()
+        c.close()
+        near = []
+        for h in rows:
+            h = dict(h)
+            h["distance_km"] = None
+            near.append(h)
+        gps_note = "no GPS fix — broadcast to all hospitals, location unknown"
+        amap = None
+    else:
+        near = nearby_hospitals(lat, lon)
+        gps_note = "gps fix ok"
+        amap = f"https://maps.google.com/?q={lat},{lon}"
     c = db()
     c.execute("INSERT INTO alerts(device_id,reason,lat,lon,roll,pitch,time,nearby) VALUES(?,?,?,?,?,?,?,?)",
               (device_id, reason, lat, lon, roll, pitch,
                datetime.now().strftime("%Y-%m-%d %H:%M:%S"), json.dumps(near)))
     c.commit(); c.close()
-    print(f"[ALERT] {reason} from {device_id} @ {lat},{lon} -> {len(near)} hospitals")
+    print(f"[ALERT] {reason} from {device_id} @ {lat},{lon} -> {len(near)} hospitals ({gps_note})")
     return jsonify({"ok": True, "notified": len(near), "hospitals": near,
-                    "map": f"https://maps.google.com/?q={lat},{lon}"})
+                    "gps": gps_note, "map": amap})
 
 @app.route("/api/alerts")
 def api_alerts():

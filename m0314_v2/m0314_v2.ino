@@ -46,14 +46,14 @@ const unsigned long CALIB_TIME = 5000;
 
 // Wi-Fi Access Point Credentials (for car driving)
 const char* AP_SSID = "ESP32_CAR_AP";
-const char* AP_PASS = "password123";
+const char* AP_PASS = "12345678";
 
 // >>> FLASK CONFIG — EDIT THESE <<<
 // Phone hotspot that ESP32 joins for internet:
-const char* STA_SSID  = "YOUR_HOTSPOT_NAME";
-const char* STA_PASS  = "YOUR_HOTSPOT_PASS";
+const char* STA_SSID  = "Airtel_priy_0001";
+const char* STA_PASS  = "air86654";
 // Your deployed Flask URL (Render), e.g. https://your-app.onrender.com/api/alert
-const char* FLASK_URL = "https://YOUR-APP.onrender.com/api/alert";
+const char* FLASK_URL = "https://caraccident-zxid.onrender.com//api/alert";
 const char* DEVICE_ID = "ESP32_CAR_01";
 
 AsyncWebServer server(80);
@@ -526,7 +526,7 @@ void sendAlertToFlask(const String& reason)
     return;
   }
   if (!gps.location.isValid()) {
-    Serial.println("[FLASK] WARNING — no GPS fix, sending 0,0 (server will reject, dashboard test uses manual lat/lon)");
+    Serial.println("[FLASK] WARNING — no GPS fix, sending 0,0 (server will notify ALL hospitals, location unknown)");
   }
 
   HTTPClient http;
