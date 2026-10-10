@@ -457,9 +457,9 @@ void loop()
   if (!alertPending)
   {
     if      (limPressed)       triggerAlert("LIMIT SWITCH CRASH");
-    else if (btnPressed)       triggerAlert("SOS BUTTON");
+    else if (btnPressed)       triggerAlert("CAR DAMAGED");
     else if (impactDetected) triggerAlert("IMPACT DETECTED");
-    else if (tiltDetected)   triggerAlert("TILT DETECTED");
+    else if (tiltDetected)   triggerAlert("ACCIDENT OCCURED");
   }
   else
   {
