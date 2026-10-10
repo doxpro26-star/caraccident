@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Hospital Login — ResQCar{% endblock %}
+{% block content %}
+<div class="card" style="max-width:460px;margin:40px auto">
+  <h2>🏥 Hospital Login</h2>
+  <p class="muted">Log in with your registered phone number to open your private emergency dashboard.</p>
+  <form method="POST" action="{{ url_for('login') }}">
+    <label>Phone number (login ID) *</label>
+    <input name="phone" placeholder="+91 ..." required autocomplete="tel">
+    <label>Password *</label>
+    <input name="password" type="password" placeholder="Your password" required autocomplete="current-password">
+    <div class="btn-row">
+      <button type="submit" class="btn btn-dark">Log In</button>
+      <a class="btn btn-soft" href="{{ url_for('register') }}">New here? Register</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

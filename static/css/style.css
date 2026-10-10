@@ -1,0 +1,156 @@
+/* ResQCar — Quarry-inspired theme
+   white page, black ink, deep-teal panels, peach + mint tints, hairline rules */
+:root{
+  --ink:#111517; --ink-2:#4b5457; --ink-3:#77807f;
+  --page:#ffffff; --panel:#f6f7f6; --row:#ffffff;
+  --line:rgba(17,21,23,.10);
+  --deep:#04262a; --deep-2:#0a3940; --mid:#12666e; --bright:#2f9aa0;
+  --pale:#bfe6e2; --peach:#f7cfae; --mint:#a9ded3;
+  --on-deep:#eef7f5; --on-deep-2:rgba(238,247,245,.76); --on-deep-3:rgba(238,247,245,.52);
+  --deep-line:rgba(190,231,224,.20);
+  --danger:#c2410c; --danger-bg:#fef3ec;
+  --ok:#2c9563;
+  --wrap:1120px; --r-lg:44px; --r-md:20px; --r-sm:12px;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,sans-serif;
+  --ease:cubic-bezier(.16,1,.3,1);
+  --shadow:0 24px 60px -30px rgba(4,38,42,.34);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--page);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden}
+a{color:inherit}
+::selection{background:var(--mid);color:#fff}
+:focus-visible{outline:2px solid var(--bright);outline-offset:3px;border-radius:6px}
+.container{width:100%;max-width:var(--wrap);margin:0 auto;padding:0 24px}
+code{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-size:12px}
+.muted{color:var(--ink-2);font-size:13px;line-height:1.5}
+
+/* ── Quarry header bar ── */
+.topbar{background:var(--page);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:50}
+.bar{display:flex;align-items:center;gap:34px;min-height:74px;max-width:1400px;margin:0 auto;padding:0 40px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:9px;font-size:25px;font-weight:600;letter-spacing:-.035em;text-decoration:none}
+.brand svg{width:23px;height:23px;color:var(--mid)}
+.brand small{display:block;font-size:11px;font-weight:500;color:var(--ink-3);letter-spacing:.06em}
+.nav{display:flex;align-items:center;gap:26px;font-size:16px;font-weight:500}
+.nav a{text-decoration:none;transition:opacity .3s var(--ease)}
+.nav a:hover{opacity:.6}
+.nav a.active{opacity:1;text-decoration:underline;text-underline-offset:6px;text-decoration-thickness:2px;text-decoration-color:var(--bright)}
+.bar-end{margin-left:auto;display:flex;align-items:center;gap:12px}
+.signin{font-weight:500;text-decoration:none;font-size:16px}
+.signin:hover{opacity:.6}
+
+/* ── buttons (pill) ── */
+.btn{display:inline-flex;align-items:center;gap:7px;height:40px;padding:0 18px;border-radius:999px;font-size:15px;font-weight:600;letter-spacing:-.005em;border:1px solid transparent;cursor:pointer;text-decoration:none;transition:transform .35s var(--ease),background .3s var(--ease)}
+.btn:hover{transform:translateY(-1px);text-decoration:none}
+.btn-dark{background:var(--ink);color:#fff}
+.btn-dark:hover{background:#000;color:#fff}
+.btn-soft{background:#eef0ef;color:var(--ink)}
+.btn-soft:hover{background:#e3e6e5;color:var(--ink)}
+.btn-light{background:#fff;color:var(--ink)}
+.btn-glass{background:rgba(238,247,245,.12);color:var(--on-deep);border-color:var(--deep-line)}
+.btn-glass:hover{background:rgba(238,247,245,.2);color:var(--on-deep)}
+.btn-teal{background:var(--mid);color:#fff}
+.btn-teal:hover{background:var(--deep-2);color:#fff}
+.btn.small{height:34px;padding:0 14px;font-size:13.5px}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;align-items:center}
+
+/* ── Quarry stage: hero gradient white→peach→mint→teal→deep ── */
+.stage{position:relative;border-radius:0 0 var(--r-lg) var(--r-lg);overflow:hidden;background:linear-gradient(180deg,#fff 0%,#fff 20%,rgba(247,207,174,.55) 30%,rgba(169,222,211,.62) 38%,var(--bright) 50%,var(--mid) 58%,var(--deep-2) 70%,var(--deep) 82%,var(--deep) 100%)}
+.bands{position:absolute;left:0;right:0;top:34%;height:30%;background:repeating-linear-gradient(90deg,rgba(255,255,255,.30) 0 68px,rgba(255,255,255,.10) 68px 136px,rgba(255,255,255,.22) 136px 204px,rgba(255,255,255,0) 204px 268px);-webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,0) 0%,#000 22%,#000 55%,rgba(0,0,0,0) 100%);mask-image:linear-gradient(180deg,rgba(0,0,0,0) 0%,#000 22%,#000 55%,rgba(0,0,0,0) 100%);pointer-events:none}
+.hero{padding:64px 0 0;text-align:center;position:relative}
+.pill-trust{display:inline-flex;align-items:center;gap:14px;background:#fff;border-radius:999px;padding:8px 22px 8px 8px;box-shadow:0 2px 14px -6px rgba(4,38,42,.25);font-size:16px;color:var(--ink-2)}
+.live-dot{display:inline-flex;align-items:center;gap:8px;background:var(--deep);color:var(--on-deep);border-radius:999px;padding:6px 14px;font-size:12px;font-weight:700;letter-spacing:.6px}
+.pulse{width:10px;height:10px;border-radius:50%;background:#4ade80;animation:pulse 1.6s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(74,222,128,.7)}70%{box-shadow:0 0 0 9px rgba(74,222,128,0)}100%{box-shadow:0 0 0 0 rgba(74,222,128,0)}}
+h1.hero-h{margin:26px 0 0;font-size:clamp(38px,4.6vw,66px);line-height:1.05;letter-spacing:-.032em;font-weight:600;text-wrap:balance}
+.hero-sub{margin:16px auto 0;max-width:640px;font-size:17px;color:var(--ink-2);text-wrap:balance}
+
+/* ── Quarry 3 plan cards → our 3 feature cards ── */
+.plans{margin:64px 0 0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px;align-items:stretch;padding-bottom:96px;text-align:left}
+.plan{background:linear-gradient(180deg,#fff 0%,#fdfdfd 55%,#eef5f3 100%);border:1px solid rgba(255,255,255,.9);border-radius:var(--r-md);box-shadow:var(--shadow);padding:30px 28px 26px;display:flex;flex-direction:column;transition:box-shadow .45s var(--ease)}
+.plan:hover{box-shadow:0 30px 66px -30px rgba(4,38,42,.42)}
+.plan.feat{margin-top:-30px;padding-top:44px;padding-bottom:34px;border-color:rgba(47,154,160,.45);box-shadow:0 34px 70px -32px rgba(4,38,42,.45)}
+.plan h2{margin:0;font-size:23px;font-weight:600;letter-spacing:-.02em}
+.plan .sub{margin:4px 0 0;font-size:15px;color:var(--ink-2)}
+.plan .bignum{margin:40px 0 0;font-size:36px;font-weight:600;letter-spacing:-.03em;line-height:1.1}
+.plan .desc{margin:14px 0 0;font-size:15.5px;line-height:1.5;color:var(--ink-2)}
+.plan .cta{margin-top:26px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.plan .pref{margin-top:auto;padding-top:30px}
+.plan .pref p{margin:0 0 10px;font-size:13.5px;color:var(--ink-3)}
+
+/* ── deep panel strip (stats / startups equivalent) ── */
+.deep-strip{text-align:center;color:var(--on-deep);padding:36px 0 60px}
+.deep-strip h2{margin:0;font-size:clamp(26px,2.7vw,38px);font-weight:600;letter-spacing:-.028em}
+.deep-strip p{max-width:640px;margin:16px auto 0;font-size:17px;color:var(--on-deep-2);text-wrap:balance}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:26px 0 0}
+.stat{border:1px solid var(--deep-line);border-radius:var(--r-md);padding:18px;background:rgba(238,247,245,.03);color:var(--on-deep)}
+.stat .num{font-size:30px;font-weight:600;letter-spacing:-.03em}
+.stat .lbl{font-size:12px;color:var(--on-deep-3);text-transform:uppercase;letter-spacing:.1em;font-weight:600;margin-top:4px}
+
+/* ── content below stage ── */
+.grid{display:grid;grid-template-columns:1.6fr 1fr;gap:16px;margin-top:34px}
+@media(max-width:860px){.grid{grid-template-columns:1fr}}
+.card{background:var(--page);border:1px solid var(--line);border-radius:var(--r-md);padding:22px;margin-bottom:14px}
+.card.tint{background:var(--panel)}
+.card h2{font-size:19px;margin:0 0 6px;letter-spacing:-.015em}
+.card h3{font-size:15px;margin:0 0 10px}
+.alert-card{border-left:4px solid var(--danger);background:linear-gradient(0deg,var(--danger-bg),#fff 60%)}
+.badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.04em}
+.badge.red{background:#fee2e2;color:#991b1b}
+.badge.green{background:#dcfce7;color:#166534}
+.badge.teal{background:var(--pale);color:var(--deep)}
+.badge.grey{background:#eef0ef;color:var(--ink-2)}
+.alert-meta{font-size:12px;color:var(--ink-3);margin:6px 0}
+table{width:100%;border-collapse:collapse;font-size:14px;margin-top:10px}
+th,td{padding:11px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);font-weight:600}
+tbody tr:nth-child(odd){background:var(--panel)}
+
+label{font-size:13px;font-weight:600;display:block;margin:14px 0 5px}
+input,select,textarea{width:100%;padding:11px 14px;border:1px solid var(--line);border-radius:var(--r-sm);font-size:15px;font-family:var(--font);background:#fff;color:var(--ink)}
+input:focus,select:focus{outline:2px solid var(--pale);border-color:var(--mid)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+@media(max-width:640px){.form-grid{grid-template-columns:1fr}}
+.hint{font-size:12px;color:var(--ink-3);margin-top:4px}
+
+.flash-wrap{padding-top:16px}
+.flash{border-radius:var(--r-sm);padding:12px 16px;font-size:14px;font-weight:600;margin-bottom:8px;border:1px solid var(--line)}
+.flash-success{background:#e7f6ee;border-color:#a9ded3;color:#14532d}
+.flash-error{background:#fee2e2;border-color:#fca5a5;color:#991b1b}
+.empty{text-align:center;padding:26px 12px;color:var(--ink-2)}
+.empty .big{font-size:34px;display:block;margin-bottom:8px}
+pre{background:var(--deep);color:var(--on-deep);border-radius:var(--r-sm);padding:14px;font-size:12px;overflow:auto;margin-top:10px}
+.hosp-row{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;padding:12px 0;border-bottom:1px solid var(--line)}
+.hosp-row:last-child{border-bottom:none}
+main{padding-bottom:40px}
+
+/* ── full-width dashboard (top nav, no sidebar) ── */
+.page-wide{width:100%;max-width:1400px;margin:0 auto;padding:28px 40px 0}
+.dash-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-bottom:18px;border-bottom:1px solid var(--line)}
+.dash-head h1{margin:8px 0 0;font-size:clamp(28px,3vw,42px);font-weight:600;letter-spacing:-.03em;line-height:1.1}
+.dash-head .sub{margin:6px 0 0;color:var(--ink-2);font-size:15px}
+.dash-actions{display:flex;gap:10px;flex-wrap:wrap}
+.stat-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:17px;margin:22px 0}
+.stat-card{background:linear-gradient(180deg,#fff 0%,#fdfdfd 55%,#eef5f3 100%);border:1px solid var(--line);border-radius:var(--r-md);box-shadow:var(--shadow);padding:20px 22px}
+.stat-card .num{font-size:34px;font-weight:600;letter-spacing:-.03em;line-height:1}
+.stat-card .lbl{margin-top:6px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-3)}
+.stat-card.accent{background:var(--deep);border-color:var(--deep);color:var(--on-deep)}
+.stat-card.accent .lbl{color:var(--on-deep-3)}
+.section-title{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:30px 0 0}
+.section-title h2{margin:0;font-size:22px;font-weight:600;letter-spacing:-.02em}
+.tbl{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-md);padding:18px 18px 22px;margin-top:14px;overflow-x:auto}
+.tbl table{margin-top:0;background:transparent}
+.tbl tbody tr:nth-child(odd){background:var(--row)}
+.tbl tbody tr{transition:background .3s var(--ease)}
+.tbl tbody tr:hover{background:#eef5f3}
+@media(max-width:1080px){.page-wide{padding:22px 24px 0}.stat-row{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:640px){.stat-row{grid-template-columns:1fr}}
+
+/* ── Quarry deep footer ── */
+.footer{margin:auto 48px 0;border-radius:var(--r-lg) var(--r-lg) 0 0;background:linear-gradient(180deg,#63a7a8 0%,#2c757c 24%,#0f4149 58%,#04191d 100%);background-color:var(--deep);color:var(--on-deep);padding:56px 0 40px}
+.footer-inner{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:flex-end}
+.fbrand{display:flex;align-items:center;gap:10px;font-size:24px;font-weight:600;letter-spacing:-.03em}
+.fbrand svg{width:24px;height:24px;color:var(--pale)}
+.fcopy{margin:8px 0 0;font-size:14px;color:var(--on-deep-2)}
+.footer a{color:var(--on-deep)}
+@media(max-width:1080px){.bar{padding:0 24px;gap:16px}.nav{display:none}.plans{grid-template-columns:1fr;padding-bottom:64px}.plan.feat{margin-top:0;padding-top:30px}.footer{margin-left:16px;margin-right:16px}}

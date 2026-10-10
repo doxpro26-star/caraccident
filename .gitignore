@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+hospital.db
+*.db
+.env
+venv/

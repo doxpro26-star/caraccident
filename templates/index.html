@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block title %}Live Emergency Dashboard — ResQCar{% endblock %}
+{% block content %}
+
+<div class="stage">
+  <div class="bands" aria-hidden="true"></div>
+  <section class="hero container">
+    <span class="pill-trust">
+      <span class="live-dot"><span class="pulse"></span> LIVE</span>
+      Trusted by {{ stats.hospitals }} hospitals · {{ stats.alerts }} emergencies handled
+    </span>
+    <h1 class="hero-h">Response that keeps pace</h1>
+    <p class="hero-sub">The ESP32 car robot reports <b>tilt / impact / SOS</b> with GPS. Hospitals within <b>{{ stats.radius }} km</b> are notified instantly with a live map link.</p>
+
+    <div class="plans">
+      <article class="plan">
+        <h2>Live Alerts</h2>
+        <p class="sub">No setup needed</p>
+        <p class="bignum">{{ stats.alerts }}</p>
+        <p class="desc">Every tilt, impact and SOS from the car robot lands here in real time, with GPS and the hospitals notified.</p>
+        <div class="cta"><a class="btn btn-soft" href="#feed">View feed ›</a></div>
+        <div class="pref"><p>Settles in:</p><p class="muted">Auto-refresh · 10s · map links</p></div>
+      </article>
+      <article class="plan feat">
+        <h2>Hospital Network</h2>
+        <p class="sub">Outpace the siren</p>
+        <p class="bignum">{{ stats.hospitals }}</p>
+        <p class="desc">Hospitals enroll with exact geo-location. Crashes inside the {{ stats.radius }} km radius appear on their dispatch page instantly.</p>
+        <div class="cta">
+          <a class="btn btn-dark" href="{{ url_for('register') }}">Start Free ›</a>
+          <a class="lnk muted" href="{{ url_for('hospitals') }}" style="text-decoration:underline;text-underline-offset:4px">All hospitals</a>
+        </div>
+        <div class="pref"><p>Preferred by:</p><p class="muted">{% for h in hospitals[:3] %}{{ h.name }}{% if not loop.last %} · {% endif %}{% else %}your hospital here{% endfor %}</p></div>
+      </article>
+      <article class="plan">
+        <h2>ESP32 Link</h2>
+        <p class="sub">Answers at crash scale</p>
+        <p class="bignum">{{ stats.radius }} km</p>
+        <p class="desc">Firmware POSTs tilt, impact and SOS as JSON with GPS — crashes land here in seconds.</p>
+        <div class="cta"><a class="btn btn-soft" href="#feed">View feed ›</a></div>
+        <div class="pref"><p>Speaks:</p><p class="muted">POST /api/alert · JSON · GPS</p></div>
+      </article>
+    </div>
+  </section>
+
+  <section class="deep-strip container">
+    <h2>One network, every crash covered</h2>
+    <p>{{ stats.today }} alerts today · {{ stats.alerts }} total · dispatch radius {{ stats.radius }} km. Bookmark your hospital's page — it never sleeps.</p>
+    <div class="stats">
+      <div class="stat"><div class="num">{{ stats.hospitals }}</div><div class="lbl">Hospitals enrolled</div></div>
+      <div class="stat"><div class="num">{{ stats.alerts }}</div><div class="lbl">Total emergencies</div></div>
+      <div class="stat"><div class="num">{{ stats.today }}</div><div class="lbl">Alerts today</div></div>
+      <div class="stat"><div class="num">{{ stats.radius }}<span style="font-size:14px"> km</span></div><div class="lbl">Dispatch radius</div></div>
+    </div>
+  </section>
+</div>
+
+<div class="container" id="feed">
+<div class="grid">
+<div>
+  <div class="card tint">
+    <h2>Latest emergencies <span class="badge grey" id="alert-count">{{ alerts|length }}</span></h2>
+    <p class="muted" id="last-updated">ESP32 posts to <code>POST /api/alert</code> as JSON.</p>
+  </div>
+  <div id="alert-list" data-source="{{ url_for('api_alerts') }}">
+  {% if not alerts %}
+    <div class="card"><div class="empty"><span class="big">✅</span><b>No emergencies yet.</b><br><span class="muted">Register a hospital — real ESP32 alerts will appear here.</span></div></div>
+  {% endif %}
+  {% for a in alerts %}
+    <div class="card alert-card">
+      <span class="badge red">{{ a.reason }}</span>
+      <span class="badge grey">{{ a.device_id }}</span>
+      <div class="alert-meta">{{ a.time }} · Roll {{ a.roll }}° · Pitch {{ a.pitch }}°</div>
+      <div>📍 <a target="_blank" href="https://maps.google.com/?q={{ a.lat }},{{ a.lon }}">{{ a.lat }}, {{ a.lon }} → Open Map</a></div>
+      {% if a.nearby_list %}
+        <table><tr><th>🔔 Notified hospital</th><th>Phone</th><th>Distance</th></tr>
+        {% for n in a.nearby_list %}
+        <tr><td><b>{{ n.name }}</b></td><td>{{ n.phone }}</td><td>{{ n.distance_km }} km</td></tr>
+        {% endfor %}</table>
+      {% else %}
+        <p class="muted" style="margin-top:8px">⚠️ No registered hospital within {{ stats.radius }} km.</p>
+      {% endif %}
+    </div>
+  {% endfor %}
+  </div>
+</div>
+
+<div>
+  <div class="card tint">
+    <h3>🏥 Recently enrolled ({{ stats.hospitals }})</h3>
+    {% if not hospitals %}<p class="muted">No hospitals yet. <a href="{{ url_for('register') }}">Register the first one →</a></p>{% endif %}
+    {% for h in hospitals %}
+    <div class="hosp-row">
+      <div><b>{{ h.name }}</b><br><span class="muted">{{ h.lat }}, {{ h.lon }}</span></div>
+      <a class="btn small btn-soft" href="{{ url_for('hospital_detail', hid=h.id) }}">View alerts</a>
+    </div>
+    {% endfor %}
+    <div class="btn-row"><a class="btn small btn-soft" href="{{ url_for('hospitals') }}">View all hospitals →</a></div>
+  </div>
+  <div class="card">
+    <h3>🔌 ESP32 integration</h3>
+    <p class="muted">Firmware already POSTs this JSON on tilt / impact / SOS:</p>
+    <pre>{
+  "device_id": "ESP32_CAR_01",
+  "reason": "TILT DETECTED",
+  "lat": 18.5204, "lon": 73.8567,
+  "roll": 52.1, "pitch": 8.3
+}</pre>
+    <p class="muted" style="margin-top:8px">Endpoint: <code>{{ request.host_url.rstrip('/') }}/api/alert</code></p>
+  </div>
+</div>
+</div>
+</div>
+{% endblock %}

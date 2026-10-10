@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}ResQCar — Crash Response Network{% endblock %}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<header class="topbar">
+  <div class="bar">
+    <a class="brand" href="{{ url_for('index') }}" aria-label="ResQCar home">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.6 21.4 8v8L12 21.4 2.6 16V8Z"/><path d="M12 21.4V12l9.4-4"/><path d="M12 12 2.6 8"/></svg>
+      <span>resqcar <small>CRASH RESPONSE NETWORK</small></span>
+    </a>
+    <nav class="nav">
+      <a href="{{ url_for('index') }}" class="{% if request.path=='/' %}active{% endif %}">Live Alerts</a>
+      <a href="{{ url_for('hospitals') }}" class="{% if request.path.startswith('/hospital') %}active{% endif %}">Hospitals</a>
+      {% if current_hospital %}
+      <a href="{{ url_for('dashboard') }}" class="{% if request.path=='/dashboard' %}active{% endif %}">My Dashboard</a>
+      {% endif %}
+    </nav>
+    <div class="bar-end">
+      {% if current_hospital %}
+      <span class="muted">🏥 {{ current_hospital.name }}</span>
+      <a class="btn btn-soft" href="{{ url_for('logout') }}">Log Out</a>
+      {% else %}
+      <a class="signin" href="{{ url_for('login') }}">Sign In</a>
+      <a class="btn btn-dark" href="{{ url_for('register') }}">+ Register Hospital</a>
+      {% endif %}
+    </div>
+  </div>
+</header>
+
+{% with msgs = get_flashed_messages(with_categories=true) %}
+{% if msgs %}
+<div class="container flash-wrap">
+  {% for cat, msg in msgs %}
+  <div class="flash flash-{{ cat }}">{{ msg }}</div>
+  {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+
+<main>
+{% block content %}{% endblock %}
+</main>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div>
+      <div class="fbrand">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.6 21.4 8v8L12 21.4 2.6 16V8Z"/><path d="M12 21.4V12l9.4-4"/><path d="M12 12 2.6 8"/></svg>
+        resqcar
+      </div>
+      <p class="fcopy">ESP32 tilt / impact / SOS → nearby hospitals ({{ RADIUS }} km radius)</p>
+    </div>
+    <span class="muted" style="color:var(--on-deep-2)">API <code style="background:rgba(255,255,255,.1);border-color:transparent;color:#fff">POST /api/alert</code> · <a href="{{ url_for('health') }}">health</a></span>
+  </div>
+</footer>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

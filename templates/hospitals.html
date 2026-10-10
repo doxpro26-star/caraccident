@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Hospitals — ResQCar{% endblock %}
+{% block content %}
+<div class="card">
+  <h2>🏥 Enrolled Hospitals ({{ hospitals|length }})</h2>
+  <p class="muted">Each hospital gets a personal dispatch page showing only crashes within {{ stats.radius }} km.</p>
+  {% if not hospitals %}
+    <div class="empty"><span class="big">🏥</span><b>No hospitals enrolled yet.</b><br><a class="btn btn-dark" style="margin-top:10px" href="{{ url_for('register') }}">Register the first hospital</a></div>
+  {% else %}
+  <table><tr><th>Hospital</th><th>Contact</th><th>Location</th><th>Dispatch page</th></tr>
+  {% for h in hospitals %}
+  <tr>
+    <td><b>{{ h.name }}</b><br><span class="muted">{{ h.address }}</span></td>
+    <td>{{ h.phone }}</td>
+    <td><a target="_blank" href="https://maps.google.com/?q={{ h.lat }},{{ h.lon }}">{{ h.lat }}, {{ h.lon }}</a></td>
+    <td><a class="btn small btn-soft" href="{{ url_for('hospital_detail', hid=h.id) }}">Open →</a></td>
+  </tr>
+  {% endfor %}</table>
+  {% endif %}
+</div>
+{% endblock %}

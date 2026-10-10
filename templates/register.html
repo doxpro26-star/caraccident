@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Register Hospital — ResQCar{% endblock %}
+{% block content %}
+<div class="card" style="max-width:680px;margin:22px auto">
+  <h2>🏥 Hospital Registration</h2>
+  <p class="muted">Enroll with your exact location. Crash / SOS alerts within <b>{{ RADIUS }} km</b> will appear on your dispatch page instantly.</p>
+  <form method="POST" action="{{ url_for('register') }}">
+    <label>Hospital name *</label>
+    <input name="name" placeholder="e.g. City Care Hospital" required maxlength="120">
+    <div class="form-grid">
+      <div><label>Emergency phone (login ID) *</label><input name="phone" placeholder="+91 ..." required maxlength="30" autocomplete="tel"></div>
+      <div><label>Email (optional)</label><input name="email" placeholder=" casualty@hospital.org" maxlength="120"></div>
+    </div>
+    <div class="form-grid">
+      <div><label>Password (min 4 chars) *</label><input name="password" type="password" placeholder="Choose a password" required autocomplete="new-password"></div>
+      <div><label>Confirm password *</label><input name="password2" type="password" placeholder="Repeat password" required autocomplete="new-password"></div>
+    </div>
+    <label>Address</label>
+    <input name="address" placeholder="Street, area, city" maxlength="200">
+    <div class="form-grid">
+      <div><label>Latitude *</label><input name="lat" id="lat" placeholder="e.g. 18.5204" required inputmode="decimal"></div>
+      <div><label>Longitude *</label><input name="lon" id="lon" placeholder="e.g. 73.8567" required inputmode="decimal"></div>
+    </div>
+    <p class="hint">Tip: press the button below on a phone at the hospital gate for a precise fix.</p>
+    <div class="btn-row">
+      <button type="button" class="btn btn-soft" onclick="fillGeo()">📍 Use my current location</button>
+      <button type="submit" class="btn btn-dark">Register Hospital</button>
+    </div>
+  </form>
+</div>
+{% endblock %}
